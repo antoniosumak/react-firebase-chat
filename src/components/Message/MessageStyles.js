@@ -24,6 +24,7 @@ export const Msg = styled.p`
   padding: 8px 24px;
   margin: 0px 12px;
   border-radius: 10px;
+  max-width: 300px;
   background-color: ${(props) =>
     props.sender === 'sender' ? `${colors.orange}` : `${colors.yellow}`};
   color: ${colors.darkBlue};

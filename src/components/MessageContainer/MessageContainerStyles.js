@@ -5,7 +5,7 @@ export const Wrapper = styled.div`
   width: 100%;
   padding: 20px;
   position: relative;
-  height: 500px;
+  height: 600px;
   overflow-y: scroll;
   scrollbar-width: thin;
 

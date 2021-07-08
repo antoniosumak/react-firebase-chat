@@ -13,4 +13,14 @@ firebase.initializeApp({
 
 export const db = firebase.firestore();
 
+export const deleteMessage = (id, userID) => {
+  if (auth.currentUser !== null) {
+    if (auth.currentUser.uid === userID) {
+      db.collection('messages').doc(id).delete();
+    } else {
+      alert("You can't delete others messages!");
+    }
+  }
+};
+
 export const auth = firebase.auth();

@@ -29,6 +29,7 @@ export const Input = styled.input`
 export const Container = styled.div`
   width: 100%;
   background-color: ${colors.blue};
+  box-shadow: rgba(180, 180, 180, 0.2) 0px 7px 29px 0px;
   @media screen and (${breakpoints.tablet}) {
     max-width: 500px;
     margin: 0 auto;
@@ -38,4 +39,9 @@ export const Container = styled.div`
     max-width: 800px;
     margin: 0 auto;
   }
+`;
+
+export const UsersDiv = styled.div`
+  display: flex;
+  justify-content: flex-end;
 `;
