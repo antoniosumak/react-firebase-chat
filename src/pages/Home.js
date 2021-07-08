@@ -1,74 +1,76 @@
-import React from 'react';
+import React, { useState, useRef } from 'react';
 import Section from '../components/Section/Section';
 import MessageContainer from '../components/MessageContainer/MessageContainer';
 import Message from '../components/Message/Message';
+import {
+  Button,
+  Input,
+  InputContainer,
+  Container,
+} from '../lib/styles/generalStyles';
+import { useAuthState } from 'react-firebase-hooks/auth';
+import { useCollectionData } from 'react-firebase-hooks/firestore';
+import { auth, db } from '../firebase';
+import firebase from 'firebase/app';
+import 'firebase/auth';
+import 'firebase/firestore';
 
 const Home = () => {
+  const [user] = useAuthState(auth);
+  const [inputValue, setInputValue] = useState('');
+  const scrollView = useRef();
+
+  const signInGoogle = () => {
+    const provider = new firebase.auth.GoogleAuthProvider();
+    auth.signInWithPopup(provider);
+  };
+
+  const signOut = () => {
+    auth.currentUser && auth.signOut();
+  };
+
+  const messageRef = db.collection('messages');
+  const query = messageRef.orderBy('createdAt').limit(25);
+  const [messages] = useCollectionData(query, { idField: 'id' });
+
+  const sendMessage = async (e) => {
+    e.preventDefault();
+
+    await messageRef.add({
+      text: inputValue,
+      createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+      uid: auth.currentUser.uid,
+      photoUrl: auth.currentUser.photoURL,
+    });
+
+    setInputValue('');
+    scrollView.current.scrollIntoView({ behavior: 'smooth' });
+  };
+
   return (
     <Section>
-      <MessageContainer>
-        <Message
-          message="Bolan jel radi ovo"
-          image={
-            'https://lh3.googleusercontent.com/ogw/ADea4I6prWQP7z6K4ojt9X98T9EzsPSYvuQNetMwbXStsw=s83-c-mo'
-          }
-          sender
-        />
-        <Message
-          message="Bolan jel radi ovo"
-          image={
-            'https://lh3.googleusercontent.com/ogw/ADea4I6prWQP7z6K4ojt9X98T9EzsPSYvuQNetMwbXStsw=s83-c-mo'
-          }
-        />
-        <Message
-          message="Bolan jel radi ovo"
-          image={
-            'https://lh3.googleusercontent.com/ogw/ADea4I6prWQP7z6K4ojt9X98T9EzsPSYvuQNetMwbXStsw=s83-c-mo'
-          }
-        />
-        <Message
-          message="Bolan jel radi ovo"
-          image={
-            'https://lh3.googleusercontent.com/ogw/ADea4I6prWQP7z6K4ojt9X98T9EzsPSYvuQNetMwbXStsw=s83-c-mo'
-          }
-          sender
-        />
-        <Message
-          message="Bolan jel radi ovo"
-          image={
-            'https://lh3.googleusercontent.com/ogw/ADea4I6prWQP7z6K4ojt9X98T9EzsPSYvuQNetMwbXStsw=s83-c-mo'
-          }
-          sender
-        />
-        <Message
-          message="Bolan jel radi ovo"
-          image={
-            'https://lh3.googleusercontent.com/ogw/ADea4I6prWQP7z6K4ojt9X98T9EzsPSYvuQNetMwbXStsw=s83-c-mo'
-          }
-          sender
-        />
-        <Message
-          message="Bolan jel radi ovo"
-          image={
-            'https://lh3.googleusercontent.com/ogw/ADea4I6prWQP7z6K4ojt9X98T9EzsPSYvuQNetMwbXStsw=s83-c-mo'
-          }
-          sender
-        />
-        <Message
-          message="Bolan jel radi ovo"
-          image={
-            'https://lh3.googleusercontent.com/ogw/ADea4I6prWQP7z6K4ojt9X98T9EzsPSYvuQNetMwbXStsw=s83-c-mo'
-          }
-          sender
-        />
-        <Message
-          message="Bolan jel radi ovo"
-          image={
-            'https://lh3.googleusercontent.com/ogw/ADea4I6prWQP7z6K4ojt9X98T9EzsPSYvuQNetMwbXStsw=s83-c-mo'
-          }
-          sender
-        />
-      </MessageContainer>
+      {user ? (
+        <Container>
+          <Button onClick={signOut}>Logout</Button>
+          <MessageContainer>
+            {messages &&
+              messages.map((value) => (
+                <Message key={value.id} message={value} />
+              ))}
+            <span ref={scrollView}></span>
+          </MessageContainer>
+          <InputContainer onSubmit={sendMessage}>
+            <Input
+              value={inputValue}
+              type="text"
+              onChange={(e) => setInputValue(e.target.value)}
+            />
+            <Button type="submit">Send</Button>
+          </InputContainer>
+        </Container>
+      ) : (
+        <Button onClick={signInGoogle}>Login</Button>
+      )}
     </Section>
   );
 };
