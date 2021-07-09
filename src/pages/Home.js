@@ -16,6 +16,7 @@ import firebase from 'firebase/app';
 import 'firebase/auth';
 import 'firebase/firestore';
 import { Image } from '../components/Message/MessageStyles';
+import Header from '../components/Header/Header';
 
 const Home = () => {
   const [user] = useAuthState(auth);
@@ -25,10 +26,6 @@ const Home = () => {
   const signInGoogle = () => {
     const provider = new firebase.auth.GoogleAuthProvider();
     auth.signInWithPopup(provider);
-  };
-
-  const signOut = () => {
-    auth.currentUser && auth.signOut();
   };
 
   const messageRef = db.collection('messages');
@@ -71,13 +68,6 @@ const Home = () => {
     <Section>
       {user ? (
         <Container>
-          <UsersDiv>
-            {uniqueUsers &&
-              uniqueUsers.map((value, index) => (
-                <Image key={index} src={value.image} />
-              ))}
-          </UsersDiv>
-          <Button onClick={signOut}>Logout</Button>
           <MessageContainer>
             {messages &&
               messages.map((value) => (
@@ -93,6 +83,12 @@ const Home = () => {
             />
             <Button type="submit">Send</Button>
           </InputContainer>
+          <UsersDiv>
+            {uniqueUsers &&
+              uniqueUsers.map((value, index) => (
+                <Image key={index} src={value.image} />
+              ))}
+          </UsersDiv>
         </Container>
       ) : (
         <Button onClick={signInGoogle}>Login</Button>

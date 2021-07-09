@@ -23,4 +23,8 @@ export const deleteMessage = (id, userID) => {
   }
 };
 
+export const signOut = () => {
+  auth.currentUser && auth.signOut();
+};
+
 export const auth = firebase.auth();

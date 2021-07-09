@@ -44,4 +44,5 @@ export const Container = styled.div`
 export const UsersDiv = styled.div`
   display: flex;
   justify-content: flex-end;
+  padding: 8px;
 `;
